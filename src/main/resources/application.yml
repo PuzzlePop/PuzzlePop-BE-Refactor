@@ -10,7 +10,7 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://3.34.198.4:3306
+    url: jdbc:mysql://34.47.114.25
     username: root
     password: puzzlepop
     hikari:

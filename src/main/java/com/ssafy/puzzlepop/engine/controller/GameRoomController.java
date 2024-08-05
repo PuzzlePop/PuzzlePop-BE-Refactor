@@ -35,6 +35,7 @@ public class GameRoomController {
     @GetMapping("/rooms/cooperation")
     @ResponseBody
     public ResponseEntity<?> cooperationRooms() {
+        System.out.println("get /rooms/cooperation");
         List<Game> allCooperationRoom = gameService.findAllCooperationRoom();
         return ResponseEntity.ok(allCooperationRoom);
     }
@@ -51,6 +52,7 @@ public class GameRoomController {
     @PostMapping("/room")
     @ResponseBody
     public Game createRoom(@RequestBody Room room) {
+        System.out.println("make room");
         Game game = gameService.createRoom(room);
         return game;
     }
