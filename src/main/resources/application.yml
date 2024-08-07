@@ -53,5 +53,5 @@ jwt:
 OPENVIDU_URL: https://i10a304.p.ssafy.io:4443/
 OPENVIDU_SECRET: MY_SECRET
 
-FRONTEND_URL: https://i10a306.p.ssafy.io/
+FRONTEND_URL: http://34.47.114.25/
 
