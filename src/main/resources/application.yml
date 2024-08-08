@@ -55,3 +55,15 @@ OPENVIDU_SECRET: MY_SECRET
 
 FRONTEND_URL: http://34.47.114.25/
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
+
+  endpoint:
+    prometheus:
+      enabled: true
+
+
+
