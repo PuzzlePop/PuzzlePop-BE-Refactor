@@ -176,6 +176,7 @@ public class GameService {
             }
 //            ourPuzzle.print();
         } else if (message.equals("USE_ITEM")) {
+            System.out.println("GameService.playGame.USE_ITEM");
             //도움형 아이템 3가지만 나옴
             Item item = ourPuzzle.getItemList()[Integer.parseInt(targets) - 1]; // index는 0부터 시작
             if (item != null) {

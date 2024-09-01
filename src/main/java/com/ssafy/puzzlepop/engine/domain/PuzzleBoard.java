@@ -67,6 +67,7 @@ public class PuzzleBoard {
     }
 
     public List<Integer> useItem(int itemNumber, PuzzleBoard puzzle) {
+        System.out.println("PuzzleBoard.useItem");
         if (itemList[itemNumber-1] == null) {
             System.out.println("아이템 사용 실패 : 없음");
             return null;
