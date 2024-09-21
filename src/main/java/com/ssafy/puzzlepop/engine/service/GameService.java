@@ -3,6 +3,7 @@ package com.ssafy.puzzlepop.engine.service;
 import com.google.gson.Gson;
 import com.ssafy.puzzlepop.engine.InGameMessage;
 import com.ssafy.puzzlepop.engine.domain.*;
+import com.ssafy.puzzlepop.engine.repository.GameRepository;
 import com.ssafy.puzzlepop.gameinfo.domain.GameInfoDto;
 import com.ssafy.puzzlepop.gameinfo.service.GameInfoService;
 import com.ssafy.puzzlepop.record.domain.RecordCreateDto;
@@ -36,6 +37,8 @@ public class GameService {
     private final UserService userService;
     private final RecordService recordService;
 
+    private final GameRepository gameRepository;
+
     @PostConstruct
     //의존관게 주입완료되면 실행되는 코드
     private void init() {
@@ -49,32 +52,34 @@ public class GameService {
 
     //협동 게임방 불러오기
     public List<Game> findAllCooperationRoom() {
-        List<Game> result = new ArrayList<>(gameRooms.values());
-        for (int i = result.size() - 1; i >= 0; i--) {
-            if (!result.get(i).getGameType().equals("COOPERATION")) {
-                result.remove(i);
-            }
-        }
-
-        //최근 생성 순으로 반환
-        Collections.reverse(result);
-
-        return result;
+//        List<Game> result = new ArrayList<>(gameRooms.values());
+//        for (int i = result.size() - 1; i >= 0; i--) {
+//            if (!result.get(i).getGameType().equals("COOPERATION")) {
+//                result.remove(i);
+//            }
+//        }
+//
+//        //최근 생성 순으로 반환
+//        Collections.reverse(result);
+//
+//        return result;
+        return gameRepository.findByGameTypeOrderByGameIdDesc("COOPERATION");
     }
 
     //배틀 게임방 불러오기
     public List<Game> findAllBattleRoom() {
-        List<Game> result = new ArrayList<>(gameRooms.values());
-        for (int i = result.size() - 1; i >= 0; i--) {
-            if (!result.get(i).getGameType().equals("BATTLE")) {
-                result.remove(i);
-            }
-        }
-
-        //최근 생성 순으로 반환
-        Collections.reverse(result);
-
-        return result;
+//        List<Game> result = new ArrayList<>(gameRooms.values());
+//        for (int i = result.size() - 1; i >= 0; i--) {
+//            if (!result.get(i).getGameType().equals("BATTLE")) {
+//                result.remove(i);
+//            }
+//        }
+//
+//        //최근 생성 순으로 반환
+//        Collections.reverse(result);
+//
+//        return result;
+        return gameRepository.findByGameTypeOrderByGameIdDesc("BATTLE");
     }
 
     public Game findById(String roomId) {
@@ -83,24 +88,31 @@ public class GameService {
 
     //채팅방 생성
     public Game createRoom(Room room) {
+//        Game game = Game.create(room);
+//        gameRooms.put(game.getGameId(), game);
+//        return game;
+
         Game game = Game.create(room);
-        gameRooms.put(game.getGameId(), game);
+        gameRepository.save(game);
         return game;
     }
 
     public void deleteRoom(String name) {
-        gameRooms.remove(name);
+//        gameRooms.remove(name);
+        // name으로 게임을 찾음
+        Game game = gameRepository.findByGameName(name);
+
+        // 게임이 존재하는 경우 삭제
+        if (game != null) {
+            gameRepository.delete(game);
+        }
     }
 
-//    public Game createRoom(String name, String userid, GameType type) {
-//        Game game = Game.create(name, userid, type);
-//        gameRooms.put(game.getGameId(), game);
-//        return game;
-//    }
-
-    public Game startGame(String roomId) {
-        Game game = findById(roomId);
+    public Game startGame(String gameId) {
+        Game game = gameRepository.findByGameId(gameId);
+        System.out.println(game);
         game.start();
+        gameRepository.save(game);
         return game;
     }
 
@@ -116,7 +128,7 @@ public class GameService {
 //        System.out.println("GameService.playGame");
 //        System.out.println(gameRooms);
         ResponseMessage res = new ResponseMessage();
-        Game game = findById(roomId);
+        Game game = gameRepository.findByGameId(roomId);
         //res.setGame(game);
 
 //        System.out.println("sender = " + sender);
@@ -341,6 +353,8 @@ public class GameService {
             System.out.println("구현중인 명령어 : " + message);
             System.out.println("targets = " + targets);
         }
+
+        gameRepository.save(game);
 
         //게임 끝났는지 마지막에 확인
         if (!game.isSaved()) {

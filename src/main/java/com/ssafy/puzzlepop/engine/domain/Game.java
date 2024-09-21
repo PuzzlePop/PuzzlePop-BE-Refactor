@@ -1,14 +1,26 @@
 package com.ssafy.puzzlepop.engine.domain;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.RedisKeyValueAdapter;
+import org.springframework.data.redis.core.TimeToLive;
+import org.springframework.data.redis.core.index.Indexed;
+import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @Getter @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@RedisHash(value = "game")
+@EnableRedisRepositories(enableKeyspaceEvents = RedisKeyValueAdapter.EnableKeyspaceEvents.ON_STARTUP)
+@ToString
 public class Game {
+
+    @Id
+    @Indexed
     private String gameId;
     private String gameName;
     private int roomSize;
@@ -33,6 +45,9 @@ public class Game {
     private Map<String, DropItem> dropRandomItem;
     private boolean isFinished = false;
     private boolean isSaved = false;
+
+    @TimeToLive(unit = TimeUnit.MINUTES)
+    private long ttl;
 
     public void changeTeam(User a, User b) {
         if (redTeam.isIn((a)) && blueTeam.isIn((b))) {
@@ -134,7 +149,7 @@ public class Game {
 
         game.sessionToUser = map;
         game.dropRandomItem = dropItemMap;
-
+        game.ttl = 5;
 
 
 
@@ -200,7 +215,7 @@ public class Game {
         bluePuzzle.init(picture, gameType);
         players = new LinkedList<>();
         players.addAll(redTeam.getPlayers());
-        players.addAll(blueTeam.getPlayers());
+        players.addAll(blueTeam==null?new LinkedList<>():blueTeam.getPlayers());
 
         startTime = new Date();
         isStarted = true;

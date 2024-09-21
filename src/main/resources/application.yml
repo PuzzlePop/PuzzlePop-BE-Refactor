@@ -40,10 +40,17 @@ spring:
     multipart:
       max-file-size: 50MB
 
+  data:
+    redis:
+      port: 6379
+      host: 34.47.114.25
+
 logging:
   level:
     org.hibernate.SQL: debug
     org.hibernate.type: trace
+    org.springframework.data.redis: debug  # Redis 관련 디버그 로그 활성화
+    org.springframework.data.redis.core.RedisConnectionUtils: info
 
 jwt:
   secret: secretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecret

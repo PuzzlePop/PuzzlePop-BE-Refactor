@@ -1,6 +1,10 @@
 package com.ssafy.puzzlepop.config;
 
+import com.ssafy.puzzlepop.engine.domain.Game;
+import com.ssafy.puzzlepop.engine.domain.Room;
+import com.ssafy.puzzlepop.engine.domain.User;
 import com.ssafy.puzzlepop.engine.repository.GameRepository;
+import com.ssafy.puzzlepop.engine.service.GameService;
 import com.ssafy.puzzlepop.engine.vo.GameVO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +24,9 @@ class RedisConfigTest {
     @Autowired
     private GameRepository gameRepository;
 
+    @Autowired
+    private GameService gameService;
+
     @Test
     public void testRedisInsertAndRetrieve() {
         String key = "testKey";
@@ -35,12 +42,58 @@ class RedisConfigTest {
 
     @Test
     public void crudTest() {
-        GameVO gameVO = new GameVO(1l, 10000);
+        String name = "room.getName()";
+        String userid = "room.getUserid()";
+        int roomSize = 4;
+        String gameType = "COOPERATION";
 
-        GameVO save = gameRepository.save(gameVO);
+        Room room = new Room();
+        room.setUserid(userid);
+        room.setName(name);
+        room.setRoomSize(roomSize);
+        room.setGameType(gameType);
 
-        GameVO byGameId = gameRepository.findByGameId(1l);
+        Game game = Game.create(room);
+        gameRepository.save(game);
+        Iterable<Game> all = gameRepository.findAll();
 
-        assertThat(gameVO.getGameId()).isEqualTo(byGameId.getGameId());
+        for (Game g : all) {
+            System.out.println(g);
+        }
+    }
+
+    @Test
+    public void updateTest() {
+        String name = "room.getName()";
+        String userid = "room.getUserid()";
+        int roomSize = 4;
+        String gameType = "COOPERATION";
+
+        Room room = new Room();
+        room.setUserid(userid);
+        room.setName(name);
+        room.setRoomSize(roomSize);
+        room.setGameType(gameType);
+        Game game = gameService.createRoom(room);
+        game.enterPlayer(new User("message.getSender()", true, "sessionId"), "sessionId");
+        gameRepository.save(game);
+//        Iterable<Game> before = gameRepository.findAll();
+//
+//        System.out.println("---------시작 전----------");
+//        for (Game g : before) {
+//            System.out.println(g);
+//        }
+        Game byGameId = gameRepository.findByGameId(game.getGameId());
+        System.out.println(byGameId);
+
+        gameService.startGame(game.getGameId());
+
+        gameRepository.findByGameId(game.getGameId());
+//        Iterable<Game> after = gameRepository.findAll();
+//
+//        System.out.println("---------시작 후----------");
+//        for (Game g : after) {
+//            System.out.println(g);
+//        }
     }
 }
