@@ -41,7 +41,7 @@ class RedisConfigTest {
     }
 
     @Test
-    public void crudTest() {
+    public void insertTest() {
         String name = "room.getName()";
         String userid = "room.getUserid()";
         int roomSize = 4;
@@ -52,14 +52,12 @@ class RedisConfigTest {
         room.setName(name);
         room.setRoomSize(roomSize);
         room.setGameType(gameType);
+        Game game = gameService.createRoom(room);
+        game.enterPlayer(new User("message.getSender()", true, "sessionId"), "sessionId");
 
-        Game game = Game.create(room);
         gameRepository.save(game);
-        Iterable<Game> all = gameRepository.findAll();
-
-        for (Game g : all) {
-            System.out.println(g);
-        }
+        Game byGameId = gameRepository.findByGameId(game.getGameId());
+        assertThat(game).isEqualTo(byGameId);
     }
 
     @Test
@@ -76,17 +74,19 @@ class RedisConfigTest {
         room.setGameType(gameType);
         Game game = gameService.createRoom(room);
         game.enterPlayer(new User("message.getSender()", true, "sessionId"), "sessionId");
+
         gameRepository.save(game);
+        Game byGameId = gameRepository.findByGameId(game.getGameId());
+
 //        Iterable<Game> before = gameRepository.findAll();
 //
 //        System.out.println("---------시작 전----------");
 //        for (Game g : before) {
 //            System.out.println(g);
 //        }
-        Game byGameId = gameRepository.findByGameId(game.getGameId());
         System.out.println(byGameId);
 
-        gameService.startGame(game.getGameId());
+        gameService.startGame(byGameId.getGameId());
 
         gameRepository.findByGameId(game.getGameId());
 //        Iterable<Game> after = gameRepository.findAll();
