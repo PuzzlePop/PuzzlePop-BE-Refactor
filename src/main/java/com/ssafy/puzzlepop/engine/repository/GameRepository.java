@@ -1,11 +1,9 @@
 package com.ssafy.puzzlepop.engine.repository;
 
 import com.ssafy.puzzlepop.engine.domain.Game;
-import com.ssafy.puzzlepop.engine.vo.GameVO;
+import java.util.List;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 public interface GameRepository extends CrudRepository<Game, String> {

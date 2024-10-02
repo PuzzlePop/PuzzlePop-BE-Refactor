@@ -1,6 +1,9 @@
 package com.ssafy.puzzlepop.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.cache.CacheProperties.Redis;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,12 +12,13 @@ import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactor
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
 @RequiredArgsConstructor
-@EnableRedisRepositories
+@EnableRedisRepositories(basePackages = "com.ssafy.puzzlepop.engine.repository")
 public class RedisConfig {
 
     private final RedisProperties redisProperties;
@@ -29,17 +33,22 @@ public class RedisConfig {
     @Bean
     public RedisTemplate<?, ?> redisTemplate() {
         RedisTemplate<?, ?> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(redisConnectionFactory());
 
-        // JSON 직렬화 설정
-        RedisSerializer<String> stringSerializer = new StringRedisSerializer();
-        RedisSerializer<Object> jsonSerializer = new GenericJackson2JsonRedisSerializer();
-
+//        // JSON 직렬화 설정
+//        RedisSerializer<String> stringSerializer = new StringRedisSerializer();
+//        RedisSerializer<Object> jsonSerializer = new GenericJackson2JsonRedisSerializer();
+//
+//        redisTemplate.setKeySerializer(new StringRedisSerializer());
+//        redisTemplate.setValueSerializer(new StringRedisSerializer());
+//        redisTemplate.setHashKeySerializer(stringSerializer);
+//        redisTemplate.setHashValueSerializer(jsonSerializer);
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new StringRedisSerializer());
-        redisTemplate.setHashKeySerializer(stringSerializer);
-        redisTemplate.setHashValueSerializer(jsonSerializer);
+//        redisTemplate.setDefaultSerializer(RedisSerializer.json());
 
+//        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(Object.class));
+
+        redisTemplate.setConnectionFactory(redisConnectionFactory());
         return redisTemplate;
     }
 }

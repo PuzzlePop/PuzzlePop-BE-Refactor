@@ -1,15 +1,28 @@
 package com.ssafy.puzzlepop.engine.domain;
 
+import jakarta.persistence.Id;
+import java.io.Serializable;
+import lombok.Generated;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.*;
+import lombok.ToString;
+import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.RedisKeyValueAdapter;
+import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 
 //TODO
 //알고리즘 정교화
 @Getter
 @NoArgsConstructor
-public class PuzzleBoard {
+@RedisHash(value = "puzzleBoard")
+@EnableRedisRepositories(enableKeyspaceEvents = RedisKeyValueAdapter.EnableKeyspaceEvents.ON_STARTUP)
+@ToString
+public class PuzzleBoard implements Serializable {
+    @Id
+    @Generated
+    private String id;
     private Picture picture; //퍼즐에 쓰이는 사진
     private HashMap<Integer, int[]> idxToCoordinate; //고유 인덱스에 따른 2차원 배열(board)에서의 좌표 정보
 

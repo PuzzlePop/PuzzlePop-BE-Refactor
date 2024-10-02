@@ -1,7 +1,9 @@
 package com.ssafy.puzzlepop.engine.domain;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import lombok.*;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Reference;
 import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.RedisKeyValueAdapter;
 import org.springframework.data.redis.core.TimeToLive;
@@ -33,8 +35,17 @@ public class Game {
 
     private Team redTeam;
     private Team blueTeam;
+
+    @Reference
+    @JsonIdentityReference(alwaysAsId = true)
     private List<User> players;
+
+    @Reference
+    @JsonIdentityReference(alwaysAsId = true)
     private PuzzleBoard redPuzzle;
+
+    @Reference
+    @JsonIdentityReference(alwaysAsId = true)
     private PuzzleBoard bluePuzzle;
 
     private Date startTime;

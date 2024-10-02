@@ -1,5 +1,6 @@
 package com.ssafy.puzzlepop.engine.domain;
 
+import java.io.Serializable;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -7,7 +8,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class Piece {
+public class Piece implements Serializable {
     private int index;
     private int correctTopIndex;
     private int correctBottomIndex;

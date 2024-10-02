@@ -1,11 +1,14 @@
 package com.ssafy.puzzlepop.config;
 
 import com.ssafy.puzzlepop.engine.domain.Game;
+import com.ssafy.puzzlepop.engine.domain.Picture;
+import com.ssafy.puzzlepop.engine.domain.PuzzleBoard;
 import com.ssafy.puzzlepop.engine.domain.Room;
 import com.ssafy.puzzlepop.engine.domain.User;
 import com.ssafy.puzzlepop.engine.repository.GameRepository;
+import com.ssafy.puzzlepop.engine.repository.PuzzleBoardRepository;
 import com.ssafy.puzzlepop.engine.service.GameService;
-import com.ssafy.puzzlepop.engine.vo.GameVO;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,7 +16,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class RedisConfigTest {
@@ -26,6 +28,9 @@ class RedisConfigTest {
 
     @Autowired
     private GameService gameService;
+
+    @Autowired
+    private PuzzleBoardRepository puzzleBoardRepository;
 
     @Test
     public void testRedisInsertAndRetrieve() {
@@ -54,8 +59,8 @@ class RedisConfigTest {
         room.setGameType(gameType);
         Game game = gameService.createRoom(room);
         game.enterPlayer(new User("message.getSender()", true, "sessionId"), "sessionId");
-
         gameRepository.save(game);
+
         Game byGameId = gameRepository.findByGameId(game.getGameId());
         assertThat(game).isEqualTo(byGameId);
     }
@@ -72,6 +77,7 @@ class RedisConfigTest {
         room.setName(name);
         room.setRoomSize(roomSize);
         room.setGameType(gameType);
+
         Game game = gameService.createRoom(room);
         game.enterPlayer(new User("message.getSender()", true, "sessionId"), "sessionId");
 
@@ -84,16 +90,26 @@ class RedisConfigTest {
 //        for (Game g : before) {
 //            System.out.println(g);
 //        }
-        System.out.println(byGameId);
+//        System.out.println(byGameId);
 
         gameService.startGame(byGameId.getGameId());
-
-        gameRepository.findByGameId(game.getGameId());
+//        gameService.startGame(game.getGameId());
+//        gameRepository.findByGameId(game.getGameId());
 //        Iterable<Game> after = gameRepository.findAll();
 //
 //        System.out.println("---------시작 후----------");
 //        for (Game g : after) {
 //            System.out.println(g);
 //        }
+    }
+
+    @Test
+    @DisplayName("puzzleboard 직렬화 테스트")
+    public void puzzleBoardTest() {
+        PuzzleBoard p = new PuzzleBoard();
+        Picture picture = new Picture();
+        p.init(picture, "BATTLE");
+
+        puzzleBoardRepository.save(p);
     }
 }

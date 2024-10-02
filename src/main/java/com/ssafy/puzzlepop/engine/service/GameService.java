@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.ssafy.puzzlepop.engine.InGameMessage;
 import com.ssafy.puzzlepop.engine.domain.*;
 import com.ssafy.puzzlepop.engine.repository.GameRepository;
+import com.ssafy.puzzlepop.engine.repository.PuzzleBoardRepository;
 import com.ssafy.puzzlepop.gameinfo.domain.GameInfoDto;
 import com.ssafy.puzzlepop.gameinfo.service.GameInfoService;
 import com.ssafy.puzzlepop.record.domain.RecordCreateDto;
@@ -18,7 +19,6 @@ import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZoneId;
 import java.util.*;
@@ -38,6 +38,7 @@ public class GameService {
     private final RecordService recordService;
 
     private final GameRepository gameRepository;
+    private final PuzzleBoardRepository puzzleBoardRepository;
 
     @PostConstruct
     //의존관게 주입완료되면 실행되는 코드
